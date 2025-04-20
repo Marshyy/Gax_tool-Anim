@@ -6,6 +6,7 @@ When outputting the files, If you an have an existing file with the same name an
 Example input/output
  
 Output.png -> Output.png.gax 
+
 Input.gax -> Input.gax.png
 
 The naming scheme is deliberate
