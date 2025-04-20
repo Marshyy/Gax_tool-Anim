@@ -1,5 +1,5 @@
-import os
 import sys
+from pathlib import Path
 
 def byte_add(*args):
     ans = 0
@@ -86,36 +86,43 @@ class ANIM():
                 key = ANIM.switch_key(key, data[i-1])
         return new_data
 
+# Actual Changes start here
 
-if len(sys.argv) != 4:
-    print("Usage: gax.py <-d|-i> <input_file> <output_file>")
-    print(" -d: dump .gax to .png")
-    print(" -i: convert .png to .gax")
-    sys.exit(1)
+# Mode to encrypt or decrypt
+# input_path = Input Path where your files are stored at. Can be relative
+# output_path = Where you want it to go
 
 mode = sys.argv[1]
-input_file = sys.argv[2]
-output_file = sys.argv[3]
+input_path = sys.argv[2]
+output_path = sys.argv[3]
 
-
-if mode == '-i':
-    with open(input_file, 'rb') as f:
-        input_data = f.read()
-
-    output_data = ANIM.encrypt(input_data)
-
-elif mode == '-d':
-    with open(input_file, 'rb') as f:
-        input_data = f.read()
-
-    output_data = ANIM.decrypt(input_data)
-
-else:
-    print("Usage: gax.py <-d|-i> <input_file> <output_file>")
-    print(" -d: dump .gax to .png")
-    print(" -i: convert .png to .gax")
+# Checks whether all arguments are made
+if len(sys.argv) != 4:
+    print("Usage: gax.py <-d|-i> <input_path> <output_path>")
+    print(" -d: dump .gax to .png | . is default folder")
+    print(" -i: convert .png to .gax | . is default folder")
+    print("Just give the relative path (or absolute, I ain't your dad) and not any file extensions")
+    print("This is just png to gax or vice verse")
     sys.exit(1)
 
-with open(output_file, 'wb') as f:
-    f.write(output_data)
-    print("Success!")
+# From .png to .gax
+if mode == '-i':
+    for child in Path('.').glob('*.png'):
+        with open(child, 'rb') as f:
+            input_data = f.read()
+            output_data = ANIM.encrypt(input_data)
+
+            with open(output_path + ".gax", 'wb') as f:
+                f.write(output_data)
+
+# From .gax to .png 
+elif mode == '-d':
+    for child in Path('.').glob('*.gax'):
+        with open(child, 'rb') as f:
+            input_data = f.read()
+            output_data = ANIM.encrypt(input_data)
+
+            with open(output_path + ".png", 'wb') as f:
+                f.write(output_data)
+
+print("Success!")
